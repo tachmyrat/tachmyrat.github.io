@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Scrape products from an external website'
 
     def handle(self, *args, **kwargs):
-        url = "https://gerekli.tm/umnye-gadzhety/"
+        url = "https://gerekli.tm/smartfony-i-aksessuary/smart-chasy/page-3/"
         response = requests.get(url)
 
         if response.status_code == 200:

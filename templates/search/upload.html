@@ -1,17 +1,76 @@
 {% extends 'search/base.html' %}
 
-{% block content %}
-<div class="container">
-    <h1>Surat Arkaly_Haryt_Gözlegi</h1>
-    <p>Harydyň suratyny ýükle.</p>
+{% block title %}Surat arkaly gözleg - Sanly Shop{% endblock %}
 
-    <form action="{% url 'image_search' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="image">Suraty_saýla:</label>
-            <input type="file" class="form-control" id="image" name="image" required>
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass p-5 text-center">
+                <h2 class="fw-bold mb-4">Surat Arkaly Gözleg</h2>
+                <p class="text-muted mb-5">Harydyň suratyny ýükle ýa-da kameradan peýdalan.</p>
+
+                <form id="image-form" action="{% url 'image_search' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label for="image" class="form-label text-muted d-block small mb-3">Kompýuteriňizden
+                            saýlaň</label>
+                        <input type="file" class="form-control" id="image" name="image" hidden
+                            onchange="this.form.submit()">
+                        <button type="button" class="btn btn-premium w-100 py-3 mb-4"
+                            onclick="document.getElementById('image').click()">
+                            FAÝL SAÝLAMAK
+                        </button>
+                    </div>
+
+                    <div class="camera-section">
+                        <div class="camera-container glass p-2 mb-3 rounded-4 shadow-lg"
+                            style="max-width: 500px; margin: 0 auto; position: relative;">
+                            <video id="video" width="100%" class="rounded-3 d-block" autoplay
+                                style="transform: scaleX(-1); background: #000; min-height: 200px;"></video>
+                        </div>
+                        <div class="d-flex justify-content-center pt-2">
+                            <button type="button" id="capture-btn"
+                                class="btn btn-success btn-lg px-5 py-3 shadow-lg rounded-pill fw-bold">
+                                📸 SURATA AL WE GÖZLE
+                            </button>
+                        </div>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+                </form>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Gözle</button>
-    </form>
+    </div>
 </div>
+
+<script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('capture-btn');
+    const form = document.getElementById('image-form');
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(error => {
+            console.error('Kamera ýalňyşlygy:', error);
+        });
+
+    captureBtn.addEventListener('click', () => {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(blob => {
+            const fileInput = new File([blob], "captured_image.png", { type: "image/png" });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(fileInput);
+            document.getElementById('image').files = dataTransfer.files;
+            form.submit();
+        }, 'image/png');
+    });
+</script>
 {% endblock %}

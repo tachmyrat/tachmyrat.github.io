@@ -1,32 +1,43 @@
 {% extends 'search/base.html' %}
+{% load search_extras %}
 
-{% block title %}Çalymdaş_Harytlar{% endblock %}
+{% block title %}Netijeler - Sanly Shop{% endblock %}
 
 {% block content %}
-<h1>Similar Products</h1>
+<div class="container py-5">
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <h2 class="fw-bold mb-0">Meňzeş Harytlar</h2>
+        <a href="{% url 'image_search' %}" class="btn btn-outline-light btn-sm px-4">Täze Gözleg</a>
+    </div>
 
-{% if similar_products %}
-    <table>
-        <thead>
-            <tr>
-                <th>Harydyň ady</th>
-                <th>Meňzeşlik derejesi</th>
-                <th>Surat</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product, score in similar_products %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td>{{ score|floatformat:2 }}</td>
-                    <td><img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100px;"></td>
-                </tr>
-                
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Siziň gözleýän harydyňyz bizde ýok.</p>
-{% endif %}
-<a href="{% url 'image_search' %}">Go Back</a>
+    {% if similar_products %}
+    <div class="row g-4">
+        {% for product, score in similar_products %}
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="glass product-card h-100 overflow-hidden d-flex flex-column">
+                <div class="ratio ratio-1x1 overflow-hidden" style="background: #000;">
+                    <img src="{{ product.image.url }}" class="object-fit-contain w-100 h-100 p-2"
+                        alt="{{ product.name }}">
+                </div>
+                <div class="p-3 d-flex flex-column flex-grow-1">
+                    <h3 class="h6 fw-bold mb-1 text-truncate" title="{{ product.name }}"
+                        style="color: var(--text-main);">{{ product.name }}</h3>
+                    <div class="d-flex align-items-center justify-content-between mt-auto">
+                        <span class="text-primary fw-bold">{{ product.price }} TMT</span>
+                        <span class="badge bg-dark border border-secondary text-muted small">
+                            {{ score|multiply:100|floatformat:1 }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 glass">
+        <p class="lead text-muted">Bagyşlaň, hiç hili meňzeş haryt tapylmady.</p>
+        <a href="{% url 'image_search' %}" class="btn btn-premium mt-3 px-5">Täze Gözleg</a>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

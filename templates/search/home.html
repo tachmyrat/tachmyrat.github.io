@@ -1,20 +1,60 @@
 {% extends 'search/base.html' %}
 
-{% block title %}Home - Sanly-shop{% endblock %}
+{% block title %}Home - Sanly Shop{% endblock %}
 
 {% block content %}
-    <h1>Sanly shop-da sizi hoş gördük!!</h1>
-    <p>Hyzmat diňe Müşderiler üçin!!</p>
-    <nav>
-        <ul>
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
-            {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
-                <li><a href="{% url 'register' %}">Register</a></li>
-            {% endif %}
-        </ul>
-        <a href="{% url 'image_search' %}">Harytlar_gözlegi</a>
-        <a href="{% url 'product_list' %}">Harytlar</a>
-    </nav>
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-3 fw-bold text-primary mb-4">Sanly Shop</h1>
+        <p class="lead text-muted mb-5">Türkmenistanyň iň döwrebap haryt gözleg ulgamy. Surat arkaly islän harydyňyzy
+            tapyň.</p>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'image_search' %}" class="btn btn-premium px-5 py-3">Gözlege Başla</a>
+            <a href="{% url 'product_list' %}" class="btn btn-outline-light px-5 py-3">Harytlary Gör</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 pt-5">
+    <div class="row text-center g-4">
+        <div class="col-md-4">
+            <div class="glass p-4 h-100">
+                <h3 class="h5 text-primary mb-3">AI Gözleg</h3>
+                <p class="text-muted small">EfficientNet-B7 algoritmasy arkaly harytlary ýokary takyklykda anyklaýarys.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass p-4 h-100">
+                <h3 class="h5 text-primary mb-3">Çalt Netije</h3>
+                <p class="text-muted small">Pre-calculated features arkaly gözleg sekundyň dowamynda amala aşyrylýar.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass p-4 h-100">
+                <h3 class="h5 text-primary mb-3">Döwrebap Dizaýn</h3>
+                <p class="text-muted small">Glassmorphism we Dark Mode bilen iň soňky dizaýn trendleri ulanýarys.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 pt-5 pb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Kategoriýalar boýunça gözle</h2>
+        <p class="text-muted">Islän ugruňyzdan dowam ediň</p>
+    </div>
+    <div class="row text-center g-4">
+        {% for cat in categories %}
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'product_list' %}?category={{ cat.id }}" class="text-decoration-none">
+                <div class="glass p-3 h-100 product-card d-flex flex-column align-items-center justify-content-center">
+                    <h4 class="h6 text-primary mb-0 fw-bold">{{ cat.name }}</h4>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

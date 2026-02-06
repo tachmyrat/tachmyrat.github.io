@@ -16,17 +16,31 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+env_file = os.path.join(BASE_DIR, '.env')
+try:
+    from dotenv import load_dotenv
+    load_dotenv(env_file)
+except ImportError:
+    # Minimal fallback if python-dotenv is not installed
+    if os.path.exists(env_file):
+        with open(env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    os.environ.setdefault(key, value)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m63@5e%byv+w*d0u20la3$(#&$^13n!zhy^1*a)424mnnmdcq+'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-m63@5e%byv+w*d0u20la3$(#&$^13n!zhy^1*a)424mnnmdcq+')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['192.168.1.107','*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 
 # Application definition
@@ -88,7 +102,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1')],
         },
     },
 }
@@ -131,12 +145,14 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Production-ready static storage
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
