@@ -55,6 +55,44 @@ Sanly Shop is a premium, state-of-the-art e-commerce platform for high-end elect
    python manage.py runserver
    ```
 
+## 💻 Local Development
+
+Follow these steps to set up the project on your local machine:
+
+### 1. Clone & Environment
+```bash
+git clone https://github.com/Tacmyrat02/tmcars.git
+cd tmcars
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configuration
+Copy the environment template and configure your local settings:
+```bash
+cp .env.template .env
+```
+*(Optionally edit `.env` for custom database or redis settings)*
+
+### 4. Database & Product Seeding
+Initialize the database and populate it with elite-tier products:
+```bash
+python manage.py migrate
+python manage.py seed_products
+python manage.py index_products
+```
+
+### 5. Start the Project
+```bash
+python manage.py runserver
+```
+Visit http://127.0.0.1:8000 in your browser.
+
 ## 🚀 Production Deployment
 
 To deploy **Sanly Shop** in a production environment (e.g., Ubuntu VPS), follow these steps:
