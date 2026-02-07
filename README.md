@@ -137,3 +137,4 @@ Use **Gunicorn** or **Daphne** (required for Channels) with **Supervisor** or **
 
 ---
 *© 2026 Sanly Shop - Redefining Digital Commerce*
+# tachmyrat
